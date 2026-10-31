@@ -3,15 +3,18 @@
 // credentials, `key=value` and JSON `"key": value` lines naming auth,
 // password or token settings, and npm or GitHub token shapes are masked
 // anyway. Every excerpt is capped and indented, so content cannot close
-// the block it lands in.
+// the block it lands in. GitHub App installation tokens (`ghs_`, which
+// includes GITHUB_TOKEN) are stateless JWTs since October 2026: about 520
+// characters with `.`, `-` and `_`, so their class is wider than the rest.
 
 const redactLine = (line: string): string =>
   line
     .replaceAll(/(:\/\/[^/@\s]*)@/g, "://***@")
     .replace(/^([^=]*(?:_auth|_password|[Tt]oken)[^=]*=).*/, "$1***")
     .replace(/^(\s*"[^"]*(?:_auth|_password|[Tt]oken)[^"]*":\s*).*/, '$1"***"')
+    .replaceAll(/\bghs_[A-Za-z0-9._-]{36,}/g, "***")
     .replaceAll(
-      /\b(?:npm_[A-Za-z0-9]{36}|gh[pousr]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,})\b/g,
+      /\b(?:npm_[A-Za-z0-9]{36}|gh[pour]_[A-Za-z0-9]{36,}|github_pat_[A-Za-z0-9_]{22,})\b/g,
       "***",
     );
 
